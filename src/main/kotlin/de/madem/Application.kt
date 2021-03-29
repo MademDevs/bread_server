@@ -28,7 +28,7 @@ fun Application.module(testing: Boolean = false) {
     }
     routing {
         get("/") {
-            call.respondText("Hello World from Bread!")
+            call.respondText("Hello World from MademDevs!")
         }
     }
     routing {
