@@ -1,7 +1,7 @@
 package de.madem.model
 
 import org.ktorm.entity.Entity
-import java.sql.Timestamp
+import java.time.Instant
 
 //#region Normal Entities
 interface DBDish : Entity<DBDish>{
@@ -72,7 +72,7 @@ interface DBRating : Entity<DBRating>{
 
     //#region Attributes
     val id : Int
-    val postTime : Timestamp
+    val postTime : Instant
     val details : String?
     val ratingValue : Int
     //#endregion
@@ -97,8 +97,8 @@ interface DBBreadUser : Entity<DBBreadUser>{
 //#endregion
 
 //#region Relationship Entities
-interface UserLikesDish : Entity<UserLikesDish>{
-    companion object : Entity.Factory<UserLikesDish>()
+interface DBUserLikesDish : Entity<DBUserLikesDish>{
+    companion object : Entity.Factory<DBUserLikesDish>()
 
     //#region Attributes
     val user : DBBreadUser
@@ -106,8 +106,8 @@ interface UserLikesDish : Entity<UserLikesDish>{
     //#endregion
 }
 
-interface UserAllergicToAdditive : Entity<UserAllergicToAdditive>{
-    companion object : Entity.Factory<UserAllergicToAdditive>()
+interface DBUserAllergicToAdditive : Entity<DBUserAllergicToAdditive>{
+    companion object : Entity.Factory<DBUserAllergicToAdditive>()
 
     //#region Attributes
     val user : DBBreadUser
@@ -115,8 +115,8 @@ interface UserAllergicToAdditive : Entity<UserAllergicToAdditive>{
     //#endregion
 }
 
-interface UserLikesFoodTag : Entity<UserLikesFoodTag>{
-    companion object : Entity.Factory<UserLikesFoodTag>()
+interface DBUserLikesFoodTag : Entity<DBUserLikesFoodTag>{
+    companion object : Entity.Factory<DBUserLikesFoodTag>()
 
     //#region Attributes
     val user : DBBreadUser
@@ -124,8 +124,8 @@ interface UserLikesFoodTag : Entity<UserLikesFoodTag>{
     //#endregion
 }
 
-interface DishContainsAdditives : Entity<DishContainsAdditives>{
-    companion object : Entity.Factory<DishContainsAdditives>()
+interface DBDishContainsAdditives : Entity<DBDishContainsAdditives>{
+    companion object : Entity.Factory<DBDishContainsAdditives>()
 
     //#region Attributes
     val dish : DBDish
@@ -133,8 +133,8 @@ interface DishContainsAdditives : Entity<DishContainsAdditives>{
     //#endregion
 }
 
-interface DishHasFoodTag : Entity<DishHasFoodTag>{
-    companion object : Entity.Factory<DishHasFoodTag>()
+interface DBDishHasFoodTag : Entity<DBDishHasFoodTag>{
+    companion object : Entity.Factory<DBDishHasFoodTag>()
 
     //#region Attributes
     val dish : DBDish
