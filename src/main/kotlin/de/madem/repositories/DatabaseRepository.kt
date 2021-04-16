@@ -11,10 +11,6 @@ object DatabaseRepository {
 
     init {
 
-        //serverTimezone=Europe/Berlin url = "jdbc:mysql://116.203.201.113:3306",
-        //            driver = "com.mysql.jdbc.Driver",
-        //            user = "remoteroot",
-        //            password = "bread#db"
         database = Database.connect(
             getDatabaseConnectionUrl()
         )
@@ -26,7 +22,7 @@ object DatabaseRepository {
 
     //#region private functions
     private fun getDatabaseConnectionUrl() : String{
-        val baseUrl = "jdbc:mysql://116.203.201.113:3306/breaddb"
+        val baseUrl = "baseUrl"
         val urlParams = mapOf<String,Any>(
             "driver" to "com.mysql.jdbc.Driver",
             "serverTimezone" to "Europe/Berlin"
