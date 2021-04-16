@@ -1,5 +1,6 @@
 package de.madem
 
+import de.madem.repositories.DatabaseRepository
 import io.ktor.routing.*
 import io.ktor.http.*
 import io.ktor.auth.*
@@ -26,6 +27,7 @@ fun Application.module(testing: Boolean = false) {
     }
     routing {
         get("/") {
+            println(DatabaseRepository.test().size)
             call.respondText("Hello World from Bread!")
         }
     }

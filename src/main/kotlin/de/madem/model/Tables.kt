@@ -1,9 +1,5 @@
 package de.madem.model
-import de.madem.model.DBUserLikesFoodTagTable.primaryKey
-import de.madem.model.DBUserLikesFoodTagTable.references
-import de.madem.model.DishContainsAdditives.primaryKey
-import de.madem.model.DishContainsAdditives.references
-import org.ktorm.entity.Entity
+
 import org.ktorm.schema.*
 
 //#region Normal Tables
