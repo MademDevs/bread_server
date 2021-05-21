@@ -1,5 +1,6 @@
-package de.madem.model
+package de.madem.model.database
 
+import de.madem.model.*
 import org.ktorm.schema.*
 
 //#region Normal Tables

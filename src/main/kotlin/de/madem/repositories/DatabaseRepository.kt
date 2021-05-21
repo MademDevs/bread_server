@@ -1,7 +1,7 @@
 package de.madem.repositories
 
 import de.madem.model.DBDish
-import de.madem.model.DBDishTable
+import de.madem.model.database.DBDishTable
 import de.madem.system.Environment
 import org.ktorm.database.Database
 import org.ktorm.entity.map
@@ -10,11 +10,13 @@ import java.sql.DriverManager
 
 object DatabaseRepository {
     private val database : Database
+    val users: DbUserRepository
 
     init {
         database = Database.connect{
             DriverManager.getConnection(getDatabaseConnectionUrl())
         }
+        users = DbUserRepository(database)
     }
 
     fun test() : List<DBDish>{
