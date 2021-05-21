@@ -24,6 +24,7 @@ object DatabaseRepository {
     //#region private functions
     private fun getDatabaseConnectionUrl() : String{
 
+
         val baseUrl = "jdbc:mysql://localhost:3306/breaddb"
         val urlParams = mapOf<String,Any>(
             "user" to Environment.dbuser,
