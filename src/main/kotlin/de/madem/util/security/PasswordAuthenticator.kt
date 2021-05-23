@@ -67,8 +67,8 @@ class PasswordAuthenticator(costVal: Int) {
         return ID + cost + '$' + enc.encodeToString(hash)
     }
 
-    fun hash(seq: CharSequence): String {
-        return hash(seq.toString().toCharArray())
+    fun hash(password: CharSequence): String {
+        return hash(password.toString().toCharArray())
     }
 
     /**
@@ -88,8 +88,8 @@ class PasswordAuthenticator(costVal: Int) {
         return zero == 0
     }
 
-    fun authenticate(seq: CharSequence, token: String): Boolean {
-        return authenticate(seq.toString().toCharArray(), token)
+    fun authenticate(password: CharSequence, token: String): Boolean {
+        return authenticate(password.toString().toCharArray(), token)
     }
 
 
