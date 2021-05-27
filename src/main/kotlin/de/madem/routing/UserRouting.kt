@@ -8,12 +8,16 @@ import de.madem.repositories.RepositoryResponse
 import de.madem.util.security.JwtConfig
 import de.madem.util.validation.AccountRegistrationValidator
 import io.ktor.application.call
+import io.ktor.auth.authenticate
+import io.ktor.auth.authentication
 import io.ktor.features.NotFoundException
 import io.ktor.http.HttpStatusCode
 import io.ktor.locations.KtorExperimentalLocationsAPI
+import io.ktor.locations.get
 import io.ktor.locations.post
 import io.ktor.request.receive
 import io.ktor.response.respond
+import io.ktor.response.respondText
 import io.ktor.routing.*
 
 @KtorExperimentalLocationsAPI
@@ -60,6 +64,15 @@ fun Routing.configureUserRouting(){
                     .jwtConfig
                     .generateToken(JwtConfig.JwtUser(userResponse.value.id, userResponse.value.userName))
                 call.respond(AccountLoginResponse(token, userResponse.value.id))
+            }
+        }
+    }
+
+    //TODO: Remove this test route later
+    authenticate {
+        get<UserLoginTestRoute>{
+            (call.authentication.principal as? JwtConfig.JwtUser)?.let {
+                call.respondText { "You are successfully logged in as user ${it.userName} with id ${it.userId}" }
             }
         }
     }
