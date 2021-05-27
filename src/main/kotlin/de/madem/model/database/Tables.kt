@@ -28,11 +28,11 @@ object DBRestaurantTable : Table<DBRestaurant>("Restaurant"){
     //#endregion
 
     //#region Foreign Attributes
-    val addressID = int("addressID").references(DbAddressTable){ it.address }
+    val addressID = int("addressID").references(DBAddressTable){ it.address }
     //#endregion
 }
 
-object DbAddressTable : Table<DBAddress>("Address"){
+object DBAddressTable : Table<DBAddress>("Address"){
     //#region Attributes
     val id = int("id").primaryKey().bindTo { it.id }
     val street = text("street").bindTo { it.street }
@@ -73,7 +73,7 @@ object DBRatingTable : Table<DBRating>("Rating") {
 
 object DBBreadUserTable : Table<DBBreadUser>("BreadUser") {
     //#region Attributes
-    val id = int("id").primaryKey().bindTo { it.id }
+    val id = int("uid").primaryKey().bindTo { it.id }
     val userName = text("userName").bindTo { it.userName }
     val pictureURL = text("pictureURL").bindTo { it.pictureURL }
     val mail = text("mail").bindTo { it.mail }

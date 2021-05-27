@@ -25,6 +25,7 @@ dependencies {
 
     //auth
     implementation "io.ktor:ktor-auth:$ktor_version"
+    implementation "io.ktor:ktor-auth-jwt:$ktor_version"
 
     //gson
     implementation "io.ktor:ktor-gson:$ktor_version"
@@ -45,5 +46,11 @@ jar {
     }
     from {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+compileKotlin {
+    kotlinOptions {
+        freeCompilerArgs = ["-Xinline-classes", "-Xopt-in=io.ktor.locations.KtorExperimentalLocationsAPI"]
     }
 }
