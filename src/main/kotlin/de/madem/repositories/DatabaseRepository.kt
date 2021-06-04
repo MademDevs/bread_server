@@ -69,6 +69,7 @@ class DatabaseRepository(private val systemProperties: SystemProperties){
         return database.sequenceOf(DBDishTable).map { it }
     }
 
+
     //#region private functions
     private fun getDatabaseConnectionUrl() : String{
         val baseUrl = "jdbc:mysql://${systemProperties.dbhost}:${systemProperties.dbport}/${systemProperties.dbname}"
