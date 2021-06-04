@@ -1,0 +1,61 @@
+{
+  "restaurant": {
+    "title": "restaurantName",
+    "details": "restaurantDetails",
+    "pictureURL": "restaurantPicture",
+    "phone": "restaurantPhone"
+  },
+  "address": {
+    "street": "restaurantStreet",
+    "number": "restaurantNumber",
+    "zipCode": "restaurantZipCode",
+    "city": "restaurantCity",
+    "country": "restaurantCountry"
+  },
+  "dishes": [
+    {
+      "title": "dishTitle1",
+      "details": "dishDetails1",
+      "pictureURL": "dishPicture1",
+      "price": 9.99,
+      "additives": [
+        {
+          "title": "additive1"
+        },
+        {
+          "title": "additive2"
+        }
+      ],
+      "foodTags": [
+        {
+          "title": "foodTag1"
+        },
+        {
+          "title": "foodTag2"
+        }
+      ]
+    },
+    {
+      "title": "dishTitle2",
+      "details": "dishDetails2",
+      "pictureURL": "dishPicture2",
+      "price": 9.99,
+      "additives": [
+        {
+          "title": "additive3"
+        },
+        {
+          "title": "additive4"
+        }
+      ],
+      "foodTags": [
+        {
+          "title": "foodTag3"
+        },
+        {
+          "title": "foodTag4"
+        }
+      ]
+    }
+  ]
+}
