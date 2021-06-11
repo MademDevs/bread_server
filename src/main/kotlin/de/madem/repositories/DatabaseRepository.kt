@@ -19,6 +19,7 @@ class DatabaseRepository(private val systemProperties: SystemProperties){
     val foodTags : DbFoodTagRepository
     val additives : DbAdditiveRepository
     val addresses : DbAddressRepository
+    val dishes : DbDishRepository
 
     init {
         //TODO: change loglevel to warn or error to avoid prints of sensitive information
@@ -29,10 +30,11 @@ class DatabaseRepository(private val systemProperties: SystemProperties){
             DriverManager.getConnection(getDatabaseConnectionUrl())
         }
         users = DbUserRepository(database, PasswordAuthenticator())
-        restaurants = DbRestaurantRepository(database, this)
+        restaurants = DbRestaurantRepository(database)
         foodTags = DbFoodTagRepository(database)
         additives = DbAdditiveRepository(database)
         addresses = DbAddressRepository(database)
+        dishes = DbDishRepository(database)
     }
 
     fun test() : List<DBDish>{

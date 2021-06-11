@@ -2,6 +2,7 @@ package de.madem.routing
 
 import de.madem.model.api.NullableRestaurantInfo
 import de.madem.modules.AppModule
+import de.madem.repositories.DatabaseRepository
 import de.madem.repositories.RepositoryResponse
 import de.madem.util.validation.RestaurantInfoValidator
 import io.ktor.application.call
@@ -29,7 +30,14 @@ fun Routing.configureRestaurantRouting() {
         }
 
         val registration = registrationNullable.notNullable()
-        call.respond(registration)
+        val addRestaurantResponse = AppModule.databaseRepository.restaurants.add(registration)
+        when(addRestaurantResponse){
+            is RepositoryResponse.Data -> call.respond(HttpStatusCode.OK)
+            is RepositoryResponse.Error -> {
+                //TODO: handle more errors
+                call.respond(HttpStatusCode.BadRequest)
+            }
+        }
     }
 
     get<AllRestaurantsRoute>{
