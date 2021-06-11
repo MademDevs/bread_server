@@ -84,6 +84,6 @@ data class Dish(
     val additives: List<Additive>,
     val foodTags: List<FoodTag>
 )
-data class FoodTag(val title: String)
 data class Additive(val title: String)
+data class FoodTag(val title: String)
 

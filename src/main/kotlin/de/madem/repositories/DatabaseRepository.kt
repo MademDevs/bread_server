@@ -1,6 +1,5 @@
 package de.madem.repositories
 
-import ch.qos.logback.core.db.dialect.MySQLDialect
 import de.madem.model.DBDish
 import de.madem.model.database.DBDishTable
 import de.madem.util.security.PasswordAuthenticator
@@ -17,6 +16,9 @@ class DatabaseRepository(private val systemProperties: SystemProperties){
     private val database : Database
     val users: DbUserRepository
     val restaurants: DbRestaurantRepository
+    val foodTags : DbFoodTagRepository
+    val additives : DbAdditiveRepository
+    val addresses : DbAddressRepository
 
     init {
         //TODO: change loglevel to warn or error to avoid prints of sensitive information
@@ -28,6 +30,9 @@ class DatabaseRepository(private val systemProperties: SystemProperties){
         }
         users = DbUserRepository(database, PasswordAuthenticator())
         restaurants = DbRestaurantRepository(database, this)
+        foodTags = DbFoodTagRepository(database)
+        additives = DbAdditiveRepository(database)
+        addresses = DbAddressRepository(database)
     }
 
     fun test() : List<DBDish>{
