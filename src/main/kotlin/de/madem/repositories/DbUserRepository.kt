@@ -2,6 +2,7 @@ package de.madem.repositories
 
 import de.madem.model.DBBreadUser
 import de.madem.model.api.AccountRegistration
+import de.madem.model.api.NullableAccountRegistration
 import de.madem.model.database.DBBreadUserTable
 import de.madem.util.security.PasswordAuthenticator
 import io.ktor.features.NotFoundException

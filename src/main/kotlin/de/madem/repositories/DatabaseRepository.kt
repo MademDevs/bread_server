@@ -13,46 +13,10 @@ import org.ktorm.logging.LogLevel
 import org.ktorm.support.mysql.MySqlDialect
 import java.sql.DriverManager
 
-/* object DatabaseRepository {
-    private val database : Database
-    val users: DbUserRepository
-
-    init {
-        //TODO: change loglevel to warn or error to avoid prints of sensitive information
-        database = Database.connect(logger = ConsoleLogger(threshold = LogLevel.DEBUG)){
-            DriverManager.getConnection(getDatabaseConnectionUrl())
-        }
-        users = DbUserRepository(database)
-    }
-
-    fun test() : List<DBDish>{
-        return database.sequenceOf(DBDishTable).map { it }
-    }
-
-    //#region private functions
-    private fun getDatabaseConnectionUrl() : String{
-        val baseUrl = "jdbc:mysql://${SystemProperties.dbhost}:${SystemProperties.dbport}/${SystemProperties.dbname}"
-        val urlParams = mapOf<String,Any?>(
-            "user" to SystemProperties.dbuser ,
-            "password" to SystemProperties.dbpwd,
-            "driver" to "com.mysql.jdbc.Driver",
-            "useSSL" to false,
-            "serverTimezone" to "Europe/Berlin",
-            "allowPublicKeyRetrieval" to true
-        )
-        //"verifyServerCertificate" to false,
-        //"useSSL" to true,
-        //"requireSSL" to true,
-        //TODO: Add valid user + password and ensure that ssl works
-
-        return "$baseUrl?${urlParams.toList().joinToString("&"){ (key,value) -> "$key=$value" }}"
-    }
-    //#endregion
-} */
-
 class DatabaseRepository(private val systemProperties: SystemProperties){
     private val database : Database
     val users: DbUserRepository
+    val restaurants: DbRestaurantRepository
 
     init {
         //TODO: change loglevel to warn or error to avoid prints of sensitive information
@@ -63,12 +27,12 @@ class DatabaseRepository(private val systemProperties: SystemProperties){
             DriverManager.getConnection(getDatabaseConnectionUrl())
         }
         users = DbUserRepository(database, PasswordAuthenticator())
+        restaurants = DbRestaurantRepository(database, this)
     }
 
     fun test() : List<DBDish>{
         return database.sequenceOf(DBDishTable).map { it }
     }
-
 
     //#region private functions
     private fun getDatabaseConnectionUrl() : String{

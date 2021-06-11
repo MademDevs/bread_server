@@ -1,10 +1,8 @@
 package de.madem.routing
 
 import de.madem.modules.AppModule
-import de.madem.repositories.DatabaseRepository
 import io.ktor.application.Application
 import io.ktor.application.call
-import io.ktor.locations.KtorExperimentalLocationsAPI
 import io.ktor.response.respond
 import io.ktor.response.respondText
 import io.ktor.routing.get
@@ -22,4 +20,6 @@ fun Application.configureRouting() = routing {
 
     // configure user routes
     configureUserRouting()
+
+    configureRestaurantRouting()
 }
