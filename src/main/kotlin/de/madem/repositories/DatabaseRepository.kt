@@ -52,10 +52,6 @@ class DatabaseRepository(private val systemProperties: SystemProperties){
             "serverTimezone" to "Europe/Berlin",
             "allowPublicKeyRetrieval" to true
         )
-        //"verifyServerCertificate" to false,
-        //"useSSL" to true,
-        //"requireSSL" to true,
-        //TODO: Add valid user + password and ensure that ssl works
 
         return "$baseUrl?${urlParams.toList().joinToString("&"){ (key,value) -> "$key=$value" }}"
     }
