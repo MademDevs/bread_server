@@ -16,7 +16,7 @@ data class NullableAccountLoginRequest(val username: String?, val password: Stri
 }
 data class AccountLoginRequest(val username: String, val password: String)
 
-data class AccountLoginResponse(val token: String?, val uid: Int?)
+data class AccountLoginResponse(val token: String, val uid: Int)
 
 
 data class NullableRestaurantInfo(
