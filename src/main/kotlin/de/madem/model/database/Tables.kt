@@ -105,14 +105,14 @@ object DBUserLikesFoodTagTable : Table<DBUserLikesFoodTag>("userLikesFoodTag") {
     //#endregion
 }
 
-object DishContainsAdditives : Table<DBDishContainsAdditives>("dishContainsAdditive") {
+object DishContainsAdditivesTable : Table<DBDishContainsAdditives>("dishContainsAdditive") {
     //#region Attributes
     val dishID = int("dishID").primaryKey().references(DBDishTable) {it.dish}
     val additiveID = int("additiveID").primaryKey().references(DBAdditiveTable) {it.additive }
     //#endregion
 }
 
-object DishHasFoodTag : Table<DBDishHasFoodTag>("dishHasFoodTag") {
+object DishHasFoodTagTable : Table<DBDishHasFoodTag>("dishHasFoodTag") {
     //#region Attributes
     val dishID = int("dishID").primaryKey().references(DBDishTable) {it.dish}
     val foodTagID = int("foodTagID").primaryKey().references(DBFoodTagTable){it.foodTag}

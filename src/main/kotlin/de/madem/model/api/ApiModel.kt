@@ -87,3 +87,5 @@ data class Dish(
 data class Additive(val title: String)
 data class FoodTag(val title: String)
 
+data class AdditiveWithId(val id: Int, val title: String)
+

@@ -3,11 +3,9 @@ package de.madem.repositories
 import de.madem.model.DBDish
 import de.madem.model.api.Dish
 import de.madem.model.database.DBDishTable
-import de.madem.model.database.DBRestaurantTable
-import de.madem.model.database.DishContainsAdditives
-import de.madem.model.database.DishHasFoodTag
+import de.madem.model.database.DishContainsAdditivesTable
+import de.madem.model.database.DishHasFoodTagTable
 import de.madem.modules.AppModule
-import kotlinx.coroutines.flow.merge
 import org.ktorm.database.Database
 import org.ktorm.dsl.*
 import org.ktorm.entity.filter
@@ -102,7 +100,7 @@ class DbDishRepository(private val database : Database) {
             val idRes = AppModule.databaseRepository.additives.mergeAdditive(additive)
             if(idRes is RepositoryResponse.Data){
                 val id = idRes.value
-                database.insertOrUpdate(DishContainsAdditives){
+                database.insertOrUpdate(DishContainsAdditivesTable){
                     set(it.additiveID, id)
                     set(it.dishID, dishId)
                     onDuplicateKey {
@@ -121,7 +119,7 @@ class DbDishRepository(private val database : Database) {
             val idRes = AppModule.databaseRepository.foodTags.mergeFoodTag(foodTag)
             if(idRes is RepositoryResponse.Data){
                 val id = idRes.value
-                database.insertOrUpdate(DishHasFoodTag){
+                database.insertOrUpdate(DishHasFoodTagTable){
                     set(it.foodTagID, id)
                     set(it.dishID, dishId)
                     onDuplicateKey {

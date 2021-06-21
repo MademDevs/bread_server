@@ -3,15 +3,13 @@ package de.madem.repositories
 import de.madem.model.DBAdditive
 import de.madem.model.api.Additive
 import de.madem.model.database.DBAdditiveTable
-import de.madem.model.database.DBFoodTagTable
+import de.madem.model.database.DBUserAllergicToAdditiveTable
 import de.madem.util.exceptions.DataAlreadyExistingException
 import io.ktor.features.NotFoundException
 import org.ktorm.database.Database
-import org.ktorm.dsl.eq
-import org.ktorm.dsl.insertAndGenerateKey
-import org.ktorm.dsl.update
-import org.ktorm.entity.firstOrNull
-import org.ktorm.entity.sequenceOf
+import org.ktorm.dsl.*
+import org.ktorm.entity.*
+import org.ktorm.support.mysql.bulkInsert
 
 class DbAdditiveRepository(private val database: Database) {
     fun add(additive: Additive) : RepositoryResponse<Int, Throwable>{
@@ -63,7 +61,6 @@ class DbAdditiveRepository(private val database: Database) {
         }
     }
 
-
     fun getAdditiveByTitle(title: String): RepositoryResponse<DBAdditive, Throwable>{
         val fetchedByTitle = database.sequenceOf(DBAdditiveTable).firstOrNull { it.title eq title }
         return if(fetchedByTitle == null){
@@ -72,5 +69,65 @@ class DbAdditiveRepository(private val database: Database) {
         else{
             RepositoryResponse.Data(fetchedByTitle)
         }
+    }
+
+    fun getAdditiveById(id: Int) : RepositoryResponse<DBAdditive,Throwable>{
+        val fetchedById = database
+            .sequenceOf(DBAdditiveTable)
+            .firstOrNull { it.id eq id }
+            ?: return RepositoryResponse.Error(NotFoundException())
+        return RepositoryResponse.Data(fetchedById)
+    }
+
+    fun setAdditivesOfUserByIds(
+        userId : Int,
+        newAdditiveIds : List<Int>
+    ) : RepositoryResponse<Boolean, Throwable> {
+        val containsUnknownAdditive = newAdditiveIds.any {
+            getAdditiveById(it) is RepositoryResponse.Error
+        }
+
+        if(containsUnknownAdditive){
+            //return Not Found to indicate that some additives are unknown
+            return RepositoryResponse.Error(NotFoundException())
+        }
+
+        //set user additives
+        val additivesOfUserResponse = getAdditivesOfUser(userId)
+        val additiveIdsOfUser = when(additivesOfUserResponse){
+            is RepositoryResponse.Error -> return additivesOfUserResponse
+            is RepositoryResponse.Data -> additivesOfUserResponse.value.map { it.id }
+        }
+
+        //determine, which additives to delete and which to add
+        val addElements = newAdditiveIds.filter { !additiveIdsOfUser.contains(it) }
+        val deleteElements = additiveIdsOfUser.filter { !newAdditiveIds.contains(it) }
+
+        deleteElements.forEach { deleteAdditiveId ->
+            database.delete(DBUserAllergicToAdditiveTable){
+                it.userID eq userId
+                it.additiveID eq deleteAdditiveId
+            }
+        }
+
+        addElements.forEach {addAdditiveId ->
+            database.insert(DBUserAllergicToAdditiveTable){
+                set(it.additiveID,addAdditiveId)
+                set(it.userID, userId)
+            }
+        }
+
+
+        return RepositoryResponse.Data(true)
+    }
+
+    fun getAdditivesOfUser(userId: Int) : RepositoryResponse<List<DBAdditive>,Throwable> {
+        val additivesOfUser = database
+            .sequenceOf(DBUserAllergicToAdditiveTable)
+            .filter { it.userID eq userId }
+            .map { it.additive }
+            .toList()
+
+        return RepositoryResponse.Data(additivesOfUser)
     }
 }
