@@ -1,6 +1,6 @@
 package de.madem.routing
 
-import de.madem.model.api.AdditiveWithId
+import de.madem.model.api.FoodTagWithId
 import de.madem.modules.AppModule
 import de.madem.repositories.RepositoryResponse
 import de.madem.util.security.JwtConfig
@@ -15,13 +15,13 @@ import io.ktor.request.receive
 import io.ktor.response.respond
 import io.ktor.routing.Routing
 
-fun Routing.configureAdditiveRouting(){
+fun Routing.configureFoodTagRouting(){
     authenticate {
-        patch<AdditiveUserRoute> {
+        patch<FoodTagUserRoute> {
 
             //auth
-            val authSuccess = authenticateJwtUserWithUrlId(it.userId)
-            if (!authSuccess){
+            val authSuc = authenticateJwtUserWithUrlId(it.userId)
+            if (!authSuc){
                 return@patch
             }
 
@@ -35,8 +35,8 @@ fun Routing.configureAdditiveRouting(){
 
             val repositoryResponse = AppModule
                 .databaseRepository
-                .additives
-                .setAdditivesOfUserByIds(it.userId,ids)
+                .foodTags
+                .setFoodTagsOfUserByIds(it.userId,ids)
 
             if(repositoryResponse is RepositoryResponse.Error){
                 val responseStatusCode = when(repositoryResponse.error){
@@ -47,22 +47,22 @@ fun Routing.configureAdditiveRouting(){
                 return@patch
             }
 
-            val getAllAdditivesOfUserResponse = AppModule
+            val getAllFoodTagsOfUserResponse = AppModule
                 .databaseRepository
-                .additives
-                .getAdditivesOfUser(it.userId)
+                .foodTags
+                .getFoodTagsOfUser(it.userId)
 
-            when(getAllAdditivesOfUserResponse){
+            when(getAllFoodTagsOfUserResponse){
                 is RepositoryResponse.Error -> call.respond(HttpStatusCode.InternalServerError)
                 is RepositoryResponse.Data -> call.respond(
-                    getAllAdditivesOfUserResponse
+                    getAllFoodTagsOfUserResponse
                         .value
-                        .map { dbAdd -> AdditiveWithId(dbAdd.id,dbAdd.title) }
+                        .map { dbFT -> FoodTagWithId(dbFT.id,dbFT.title) }
                 )
             }
         }
 
-        get<AdditiveUserRoute>{
+        get<FoodTagUserRoute>{
             //auth
             val authSuccess = authenticateJwtUserWithUrlId(it.userId)
             if (!authSuccess){
@@ -70,22 +70,22 @@ fun Routing.configureAdditiveRouting(){
             }
 
             //get impl
-            val getAllAdditivesOfUserResponse = AppModule
+            val getAllFoodTagsOfUserResponse = AppModule
                 .databaseRepository
-                .additives
-                .getAdditivesOfUser(it.userId)
+                .foodTags
+                .getFoodTagsOfUser(it.userId)
 
-            when(getAllAdditivesOfUserResponse){
+            when(getAllFoodTagsOfUserResponse){
                 is RepositoryResponse.Error -> call.respond(HttpStatusCode.InternalServerError)
                 is RepositoryResponse.Data -> call.respond(
-                    getAllAdditivesOfUserResponse
+                    getAllFoodTagsOfUserResponse
                         .value
-                        .map { dbAdd -> AdditiveWithId(dbAdd.id,dbAdd.title) }
+                        .map { dbFT -> FoodTagWithId(dbFT.id,dbFT.title) }
                 )
             }
         }
 
-        get<AdditiveRoute>{
+        get<FoodTagRoute>{
             with(call){
                 //auth
                 val jwtUser = authentication.principal as? JwtConfig.JwtUser
@@ -94,10 +94,10 @@ fun Routing.configureAdditiveRouting(){
                     return@get
                 }
 
-                when(val getAllResponse = AppModule.databaseRepository.additives.getAllAdditives()){
+                when(val getAllResponse = AppModule.databaseRepository.foodTags.getAllFoodTags()){
                     is RepositoryResponse.Error -> respond(HttpStatusCode.InternalServerError)
                     is RepositoryResponse.Data -> {
-                        respond(getAllResponse.value.map { AdditiveWithId(it.id, it.title) })
+                        respond(getAllResponse.value.map { FoodTagWithId(it.id, it.title) })
                     }
                 }
             }

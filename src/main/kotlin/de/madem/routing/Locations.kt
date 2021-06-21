@@ -14,3 +14,6 @@ import io.ktor.locations.Location
 @Location("/additive/{userId}") data class AdditiveUserRoute(val userId: Int)
 @Location("/additive") object AdditiveRoute
 
+@Location("/foodtag/{userId}") data class FoodTagUserRoute(val userId: Int)
+@Location("/foodtag") object FoodTagRoute
+

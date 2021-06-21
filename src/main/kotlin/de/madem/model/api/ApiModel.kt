@@ -88,4 +88,5 @@ data class Additive(val title: String)
 data class FoodTag(val title: String)
 
 data class AdditiveWithId(val id: Int, val title: String)
+data class FoodTagWithId(val id: Int, val title: String)
 

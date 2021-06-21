@@ -26,4 +26,7 @@ fun Application.configureRouting() = routing {
 
     //configure additive routes
     configureAdditiveRouting()
+
+    //configure FoodTag Routes
+    configureFoodTagRouting()
 }
