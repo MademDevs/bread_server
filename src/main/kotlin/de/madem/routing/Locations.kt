@@ -11,6 +11,6 @@ import io.ktor.locations.Location
 @Location("/restaurant") object AllRestaurantsRoute
 
 
-@Location("/additive/{userId}")
-data class AdditiveUserRoute(val userId: Int)
+@Location("/additive/{userId}") data class AdditiveUserRoute(val userId: Int)
+@Location("/additive") object AdditiveRoute
 

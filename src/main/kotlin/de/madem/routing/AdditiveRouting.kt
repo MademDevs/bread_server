@@ -4,8 +4,6 @@ import de.madem.model.api.AdditiveWithId
 import de.madem.modules.AppModule
 import de.madem.repositories.RepositoryResponse
 import de.madem.util.security.JwtConfig
-import io.ktor.application.Application
-import io.ktor.application.ApplicationCall
 import io.ktor.application.call
 import io.ktor.auth.authenticate
 import io.ktor.auth.authentication
@@ -16,13 +14,11 @@ import io.ktor.locations.patch
 import io.ktor.request.receive
 import io.ktor.response.respond
 import io.ktor.routing.Routing
-import io.ktor.util.pipeline.PipelineContext
 
 fun Routing.configureAdditiveRouting(){
 
 
     authenticate {
-
         patch<AdditiveUserRoute> {
 
             //auth
@@ -90,20 +86,23 @@ fun Routing.configureAdditiveRouting(){
                 )
             }
         }
-    }
-}
 
+        get<AdditiveRoute>{
+            with(call){
+                //auth
+                val jwtUser = authentication.principal as? JwtConfig.JwtUser
+                if(jwtUser == null){
+                    respond(HttpStatusCode.Unauthorized)
+                    return@get
+                }
 
-private suspend fun PipelineContext<Unit, ApplicationCall>.authenticateJwtUserWithUrlId(urlUserId: Int) : Boolean{
-    val authUserId = (call.authentication.principal as? JwtConfig.JwtUser)?.userId
-    if(authUserId == null){
-        call.respond(HttpStatusCode.Unauthorized)
-        return false
+                when(val getAllResponse = AppModule.databaseRepository.additives.getAllAdditives()){
+                    is RepositoryResponse.Error -> respond(HttpStatusCode.InternalServerError)
+                    is RepositoryResponse.Data -> {
+                        respond(getAllResponse.value.map { AdditiveWithId(it.id, it.title) })
+                    }
+                }
+            }
+        }
     }
-    else if (authUserId != urlUserId){
-        call.respond(HttpStatusCode.Forbidden)
-        return false
-    }
-
-    return true
 }

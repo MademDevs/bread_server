@@ -71,6 +71,11 @@ class DbAdditiveRepository(private val database: Database) {
         }
     }
 
+    fun getAllAdditives() : RepositoryResponse<List<DBAdditive>,Throwable>{
+        val fetched = database.sequenceOf(DBAdditiveTable).toList()
+        return RepositoryResponse.Data(fetched)
+    }
+
     fun getAdditiveById(id: Int) : RepositoryResponse<DBAdditive,Throwable>{
         val fetchedById = database
             .sequenceOf(DBAdditiveTable)
@@ -110,12 +115,22 @@ class DbAdditiveRepository(private val database: Database) {
             }
         }
 
-        addElements.forEach {addAdditiveId ->
+        if(addElements.isNotEmpty()){
+            database.bulkInsert(DBUserAllergicToAdditiveTable){
+                addElements.forEach {addAdditiveId ->
+                    item {
+                        set(it.additiveID,addAdditiveId)
+                        set(it.userID, userId)
+                    }
+                }
+            }
+        }
+        /*addElements.forEach {addAdditiveId ->
             database.insert(DBUserAllergicToAdditiveTable){
                 set(it.additiveID,addAdditiveId)
                 set(it.userID, userId)
             }
-        }
+        }*/
 
 
         return RepositoryResponse.Data(true)
