@@ -9,4 +9,6 @@ import io.ktor.locations.Location
 
 @Location ("/restaurant/register") object RestaurantRegisterRouter
 @Location("/restaurant") object AllRestaurantsRoute
+@Location("/restaurant/{id}") object RestaurantByIdRoute
+@Location("restaurant/{location}&{radius}") object RestaurantByLocationAndRadiusRoute
 

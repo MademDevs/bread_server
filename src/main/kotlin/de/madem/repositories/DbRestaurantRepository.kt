@@ -64,5 +64,20 @@ class DbRestaurantRepository(private val database: Database) {
             } ?: return RepositoryResponse.Error(NotFoundException())
         return RepositoryResponse.Data(fetched)
     }
+
+    fun getRestaurantById(id: Int): RepositoryResponse<DBRestaurant, Throwable>{
+        val fetched = database
+            .sequenceOf(DBRestaurantTable)
+            .firstOrNull {
+                it.id eq id
+            } ?: return RepositoryResponse.Error(NotFoundException())
+        return RepositoryResponse.Data(fetched)
+    }
+
+    fun getRestaurantByLocationAndRadius(location: List<Double>, radius: Int): RepositoryResponse<List<DBRestaurant>, Throwable> {
+        val data = database.sequenceOf(DBRestaurantTable).toList()
+        return RepositoryResponse.Data(data)
+    }
+
     //#endregion
 }

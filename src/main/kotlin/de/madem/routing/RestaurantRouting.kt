@@ -46,4 +46,31 @@ fun Routing.configureRestaurantRouting() {
             is RepositoryResponse.Error -> call.respond(HttpStatusCode.NotFound)
         }
     }
+
+    get<RestaurantByIdRoute>{
+        val id = call.request.queryParameters["id"]?.toInt()
+        if(id != null) {
+            when(val dbResponse = AppModule.databaseRepository.restaurants.getRestaurantById(id)) {
+                is RepositoryResponse.Data -> call.respond(dbResponse.value)
+                is RepositoryResponse.Error -> call.respond(HttpStatusCode.NotFound)
+            }
+        } else {
+            call.respond(HttpStatusCode.BadRequest)
+        }
+    }
+
+    get<RestaurantByLocationAndRadiusRoute>{
+        val location = call.request.queryParameters["location"]?.removeSurrounding("[", "]")?.split(",")?.map { it.toDouble() }
+        val radius = call.request.queryParameters["radius"]?.toInt()
+        if(location != null && radius != null) {
+            when (val dbResponse =
+                AppModule.databaseRepository.restaurants.getRestaurantByLocationAndRadius(location, radius)) {
+                is RepositoryResponse.Data -> call.respond(dbResponse.value)
+                is RepositoryResponse.Error -> call.respond(HttpStatusCode.NotFound)
+            }
+        } else {
+            call.respond(HttpStatusCode.BadRequest)
+        }
+    }
+
 }
