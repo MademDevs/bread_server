@@ -3,8 +3,11 @@ package de.madem.repositories
 import de.madem.model.DBAddress
 import de.madem.model.api.Address
 import de.madem.model.database.DBAddressTable
+import de.madem.modules.AppModule
 import de.madem.util.exceptions.InvalidIdException
 import io.ktor.features.NotFoundException
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import org.ktorm.database.Database
 import org.ktorm.dsl.and
 import org.ktorm.dsl.eq
@@ -15,7 +18,7 @@ import org.ktorm.entity.sequenceOf
 import javax.management.Query.and
 
 class DbAddressRepository(private val database: Database) {
-    fun merge(addressList: List<Address>, shouldUpdateExisting : Boolean = true) : RepositoryResponse<List<Int>,Throwable>{
+    suspend fun merge(addressList: List<Address>, shouldUpdateExisting : Boolean = true) : RepositoryResponse<List<Int>,Throwable>{
         val idList = addressList.map {address ->
             val mergeResponse = merge(address, shouldUpdateExisting)
             when(mergeResponse){
@@ -33,18 +36,24 @@ class DbAddressRepository(private val database: Database) {
 
     }
 
-    fun merge(address: Address, shouldUpdateExisting : Boolean = true) : RepositoryResponse<Int,Throwable>{
+    suspend fun merge(address: Address, shouldUpdateExisting : Boolean = true) : RepositoryResponse<Int,Throwable> = coroutineScope{
         when(val existing = getAddressByAddressParameters(address)){
             is RepositoryResponse.Data -> {
                 if(shouldUpdateExisting){
                     val updateResponse = updateAddressById(existing.value.id, address)
                     when(updateResponse){
-                        is RepositoryResponse.Error -> return updateResponse
+                        is RepositoryResponse.Error -> return@coroutineScope updateResponse
                     }
                 }
-                return RepositoryResponse.Data(existing.value.id)
+                return@coroutineScope RepositoryResponse.Data(existing.value.id)
             }
+
             is RepositoryResponse.Error -> with(address){
+                val locationDef = async {
+                    return@async AppModule.geoRepository.getGeoLocation(this@with)
+                }
+                val location = locationDef.await()
+
                 val genId = database.insertAndGenerateKey(DBAddressTable){
                     set(it.street, street)
                     set(it.houseNumber, number)
@@ -52,7 +61,7 @@ class DbAddressRepository(private val database: Database) {
                     set(it.city,city)
                     set(it.country, country)
                 }
-                return RepositoryResponse.Data(genId as Int)
+                return@coroutineScope RepositoryResponse.Data(genId as Int)
             }
         }
     }

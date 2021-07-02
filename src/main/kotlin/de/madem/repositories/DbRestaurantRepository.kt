@@ -22,7 +22,7 @@ class DbRestaurantRepository(private val database: Database) {
         return RepositoryResponse.Data(data)
     }
 
-    fun add(registration: RestaurantInfo) : RepositoryResponse<Int,Throwable>{
+    suspend fun add(registration: RestaurantInfo) : RepositoryResponse<Int,Throwable>{
         val addressResponse = AppModule.databaseRepository
             .addresses
             .merge(registration.address, shouldUpdateExisting = false)

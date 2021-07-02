@@ -35,6 +35,11 @@ dependencies {
 
     //testing
     testImplementation "io.ktor:ktor-server-tests:$ktor_version"
+
+    //fuel
+    implementation 'com.github.kittinunf.fuel:fuel:2.3.0'
+    implementation 'com.github.kittinunf.fuel:fuel-gson:2.3.0'
+
 }
 
 

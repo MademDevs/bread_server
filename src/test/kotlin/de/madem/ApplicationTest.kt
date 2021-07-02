@@ -1,5 +1,7 @@
 package de.madem
 
+import de.madem.model.api.Address
+import de.madem.repositories.GeoLocationRepository
 import io.ktor.routing.*
 import io.ktor.http.*
 import io.ktor.auth.*
@@ -22,4 +24,18 @@ class ApplicationTest {
             }
         }
     }
+    @Test
+    fun testGeoAPI() {
+        val repo = GeoLocationRepository()
+        val address = Address(
+            street = "Parkstr.",
+            number = "6",
+            zipCode = "95213",
+            city = "Münchberg",
+            country = "Deutschland"
+        )
+        val location = repo.getGeoLocation(address)
+        print(location)
+    }
+
 }
