@@ -52,7 +52,11 @@ class DbAddressRepository(private val database: Database) {
                 val locationDef = async {
                     return@async AppModule.geoRepository.getGeoLocation(this@with)
                 }
-                val location = locationDef.await()
+                var location = locationDef.await()
+
+                if(location.first == null || location.second == null) {
+                    location = Pair(11.941, 50.325)
+                }
 
                 val genId = database.insertAndGenerateKey(DBAddressTable){
                     set(it.street, street)
