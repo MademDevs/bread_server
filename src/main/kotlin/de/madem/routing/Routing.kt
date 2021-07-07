@@ -22,4 +22,6 @@ fun Application.configureRouting() = routing {
     configureUserRouting()
 
     configureRestaurantRouting()
+
+    configureDishRouting()
 }

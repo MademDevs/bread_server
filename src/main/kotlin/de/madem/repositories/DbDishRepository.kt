@@ -1,18 +1,16 @@
 package de.madem.repositories
 
 import de.madem.model.DBDish
+import de.madem.model.DBUserLikesDish
 import de.madem.model.api.Dish
-import de.madem.model.database.DBDishTable
-import de.madem.model.database.DBRestaurantTable
-import de.madem.model.database.DishContainsAdditives
-import de.madem.model.database.DishHasFoodTag
+import de.madem.model.database.*
 import de.madem.modules.AppModule
+import io.ktor.features.*
+import io.ktor.http.*
 import kotlinx.coroutines.flow.merge
 import org.ktorm.database.Database
 import org.ktorm.dsl.*
-import org.ktorm.entity.filter
-import org.ktorm.entity.sequenceOf
-import org.ktorm.entity.toList
+import org.ktorm.entity.*
 import org.ktorm.support.mysql.insertOrUpdate
 
 class DbDishRepository(private val database : Database) {
@@ -63,6 +61,50 @@ class DbDishRepository(private val database : Database) {
 
                 return RepositoryResponse.Data(existingDish.id)
             }
+        }
+    }
+
+    fun updateUserFavourites(userId: Int, dishId: Int) : RepositoryResponse<List<DBDish>, Throwable> {
+        val usersFavourites = getDishFavouritesByUserId(userId)
+        when(usersFavourites){
+            is RepositoryResponse.Data -> {
+                if(usersFavourites.value.find{it -> dishId == it.id} == null){
+                    database.insert(DBUserLikesDishTable){
+                        set(it.userID, userId)
+                        set(it.dishID, dishId)
+                    }
+                } else {
+                    database.delete(DBUserLikesDishTable) {
+                        it.userID eq userId
+                        it.dishID eq dishId
+                    }
+                }
+            }
+            is RepositoryResponse.Error -> { return usersFavourites }
+        }
+
+        return getDishFavouritesByUserId(userId)
+    }
+
+    fun getDishFavouritesByUserId(userId: Int) : RepositoryResponse<List<DBDish>, Throwable>{
+        val fetched = database
+            .sequenceOf(DBUserLikesDishTable)
+            .filter { it.userID eq userId }
+            .map { it.dish }
+            .toList()
+
+        return RepositoryResponse.Data(fetched)
+    }
+
+    fun getDishById(dishId: Int) : RepositoryResponse<DBDish, Throwable>{
+        val fetched = database
+            .sequenceOf(DBDishTable)
+            .firstOrNull { it.id eq dishId}
+
+        return if(fetched == null){
+            RepositoryResponse.Error(NotFoundException())
+        } else {
+            RepositoryResponse.Data(fetched)
         }
     }
 
