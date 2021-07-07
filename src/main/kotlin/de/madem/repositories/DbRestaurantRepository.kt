@@ -2,6 +2,7 @@ package de.madem.repositories
 
 import de.madem.model.DBRestaurant
 import de.madem.model.api.RestaurantInfo
+import de.madem.model.database.DBAddressTable
 import de.madem.model.database.DBRestaurantTable
 import de.madem.modules.AppModule
 import de.madem.util.exceptions.RestaurantAlreadyExistingException
@@ -9,11 +10,13 @@ import io.ktor.features.NotFoundException
 import org.ktorm.database.Database
 import org.ktorm.dsl.and
 import org.ktorm.dsl.eq
+import org.ktorm.dsl.from
 import org.ktorm.dsl.insertAndGenerateKey
 import org.ktorm.entity.firstOrNull
 import org.ktorm.entity.sequenceOf
 import org.ktorm.entity.toList
 import org.ktorm.support.mysql.toLowerCase
+import kotlin.math.abs
 
 class DbRestaurantRepository(private val database: Database) {
     //#region Functions
@@ -75,8 +78,15 @@ class DbRestaurantRepository(private val database: Database) {
     }
 
     fun getRestaurantByLocationAndRadius(location: List<Double>, radius: Int): RepositoryResponse<List<DBRestaurant>, Throwable> {
-        val data = database.sequenceOf(DBRestaurantTable).toList()
-        return RepositoryResponse.Data(data)
+        val restaurants = database
+            .sequenceOf(DBRestaurantTable)
+            .toList()
+        val addresses = database
+            .sequenceOf(DBAddressTable)
+            .toList()
+        addresses.map { it.takeIf { abs(it.long - location[0]) < radius/111.13 && abs(it.lat - location[1]) < radius/111.13 }}
+        restaurants.map { it.takeIf { addresses.contains(it.address) }}
+        return RepositoryResponse.Data(restaurants)
     }
 
     //#endregion
