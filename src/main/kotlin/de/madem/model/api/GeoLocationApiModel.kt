@@ -8,7 +8,7 @@ data class GeoLocationApiModel(
     val standard: Standard
 ){
     fun getLongLat(): Pair<Double?, Double?> {
-        return Pair(latt.toDoubleOrNull(), longt.toDoubleOrNull())
+        return Pair(longt.toDoubleOrNull(), latt.toDoubleOrNull())
     }
 }
 

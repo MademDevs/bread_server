@@ -46,6 +46,8 @@ interface DBAddress : Entity<DBAddress>{
     val zipCode : String
     val city : String
     val country : String
+    val long : Double
+    val lat : Double
     //#endregion
 }
 
