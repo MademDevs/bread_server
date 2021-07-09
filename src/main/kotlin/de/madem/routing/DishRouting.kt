@@ -5,6 +5,7 @@ import de.madem.repositories.RepositoryResponse
 import io.ktor.application.*
 import io.ktor.http.*
 import io.ktor.locations.*
+import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.routing.get
@@ -47,7 +48,12 @@ fun Routing.configureDishRouting() {
     }
     patch<UserFavouriteDishes>{
         val userId = it.user_id
-        val dishId = it.id
+        val dishId = try {
+            call.receive<Int>()
+        } catch(ex : Exception){
+            call.respond(HttpStatusCode.BadRequest)
+            return@patch
+        }
 
         if(userId != null && dishId != null){
             when(val dbResponse = AppModule.databaseRepository.dishes.updateUserFavourites(userId, dishId)) {
