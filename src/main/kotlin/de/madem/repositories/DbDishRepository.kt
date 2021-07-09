@@ -161,6 +161,7 @@ class DbDishRepository(private val database : Database) {
         }
     }
 
+
     private fun mergeDishFoodTags(dish: Dish,dishId: Int){
         dish.foodTags.forEach{foodTag ->
             val idRes = AppModule.databaseRepository.foodTags.mergeFoodTag(foodTag)
