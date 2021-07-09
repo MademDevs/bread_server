@@ -21,7 +21,15 @@ fun Application.configureRouting() = routing {
     // configure user routes
     configureUserRouting()
 
+    //configure restaurant routes
     configureRestaurantRouting()
 
+    //configure Dish Routes
     configureDishRouting()
+
+    //configure additive routes
+    configureAdditiveRouting()
+
+    //configure FoodTag Routes
+    configureFoodTagRouting()
 }

@@ -2,7 +2,6 @@ package de.madem.routing
 
 import de.madem.model.api.NullableRestaurantInfo
 import de.madem.modules.AppModule
-import de.madem.repositories.DatabaseRepository
 import de.madem.repositories.RepositoryResponse
 import de.madem.util.validation.RestaurantInfoValidator
 import io.ktor.application.call
@@ -14,7 +13,7 @@ import io.ktor.response.respond
 import io.ktor.routing.Routing
 
 fun Routing.configureRestaurantRouting() {
-    post<RestaurantRegisterRouter>{
+    post<RestaurantRegisterRoute>{
         val registrationNullable = try{
             call.receive<NullableRestaurantInfo>()
         }
