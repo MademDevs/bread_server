@@ -3,12 +3,12 @@ package de.madem.model.api
 data class GeoLocationApiModel(
     val alt: Alt,
     val elevation: Elevation,
-    val latt: String,
-    val longt: String,
+    val latt: String?,
+    val longt: String?,
     val standard: Standard
 ){
     fun getLongLat(): Pair<Double?, Double?> {
-        return Pair(longt.toDoubleOrNull(), latt.toDoubleOrNull())
+        return Pair(longt?.toDoubleOrNull(), latt?.toDoubleOrNull())
     }
 }
 

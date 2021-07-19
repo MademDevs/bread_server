@@ -40,8 +40,8 @@ object DBAddressTable : Table<DBAddress>("Address"){
     val zipCode = text("zipCode").bindTo { it.zipCode }
     val city = text("city").bindTo { it.city }
     val country = text("country").bindTo { it.country }
-    val long = double("long").bindTo { it.long }
-    val lat = double("lat").bindTo { it.lat }
+    val longitude = double("longitude").bindTo { it.longitude }
+    val latitude = double("latitude").bindTo { it.latitude }
     //#endregion
 }
 

@@ -18,12 +18,14 @@ fun Routing.configureRestaurantRouting() {
             call.receive<NullableRestaurantInfo>()
         }
         catch (ex: Exception){
+            ex.printStackTrace()
             call.respond(HttpStatusCode.BadRequest)
             return@post
         }
 
         val validator = RestaurantInfoValidator()
         if(!validator.isValid(registrationNullable)){
+            System.err.println("Tried to register restaurant. Restaurant was not valid!")
             call.respond(HttpStatusCode.BadRequest)
             return@post
         }

@@ -64,8 +64,8 @@ class DbAddressRepository(private val database: Database) {
                     set(it.zipCode,zipCode)
                     set(it.city,city)
                     set(it.country, country)
-                    set(it.long, location.first)
-                    set(it.lat, location.second)
+                    set(it.longitude, location.first)
+                    set(it.latitude, location.second)
                 }
                 return@coroutineScope RepositoryResponse.Data(genId as Int)
             }
