@@ -1,6 +1,7 @@
 package de.madem.routing
 
 import de.madem.model.api.NullableRestaurantInfo
+import de.madem.model.api.Restaurant
 import de.madem.modules.AppModule
 import de.madem.repositories.RepositoryResponse
 import de.madem.util.validation.RestaurantInfoValidator
@@ -49,24 +50,33 @@ fun Routing.configureRestaurantRouting() {
     }
 
     get<RestaurantByIdRoute>{
-        val id = call.request.queryParameters["id"]?.toInt()
+        val id = it.id //call.request.queryParameters["id"]?.toInt()
         if(id != null) {
             when(val dbResponse = AppModule.databaseRepository.restaurants.getRestaurantById(id)) {
-                is RepositoryResponse.Data -> call.respond(dbResponse.value)
+                is RepositoryResponse.Data -> with(dbResponse.value){
+                    call.respond(Restaurant(title,details,pictureURL,phone ?: ""))
+                }
                 is RepositoryResponse.Error -> call.respond(HttpStatusCode.NotFound)
             }
         } else {
-            call.respond(HttpStatusCode.BadRequest)
+            call.respond(HttpStatusCode.NotFound)
         }
     }
 
-    get<RestaurantByLocationAndRadiusRoute>{
-        val location = call.request.queryParameters["location"]?.removeSurrounding("[", "]")?.split(",")?.map { it.toDouble() }
-        val radius = call.request.queryParameters["radius"]?.toInt()
+    get<RestaurantByLocationAndRadiusRoute>{ route ->
+        println("Location is: ${route.location}\nRadius is: ${route.radius}")
+        val location = route.location?.removeSurrounding("[", "]")?.split(",")?.map { it.toDouble()} //call.request.queryParameters["location"]?.removeSurrounding("[", "]")?.split(",")?.map { it.toDouble() }
+        val radius = route.radius?.toInt() //call.request.queryParameters["radius"]?.toInt()
+
         if(location != null && radius != null) {
             when (val dbResponse =
                 AppModule.databaseRepository.restaurants.getRestaurantByLocationAndRadius(location, radius)) {
-                is RepositoryResponse.Data -> call.respond(dbResponse.value)
+                is RepositoryResponse.Data -> {
+                    val responseData = dbResponse
+                        .value
+                        .map { Restaurant(it.title,it.details,it.pictureURL, it.phone ?: "") }
+                    call.respond(responseData)
+                }
                 is RepositoryResponse.Error -> call.respond(HttpStatusCode.NotFound)
             }
         } else {

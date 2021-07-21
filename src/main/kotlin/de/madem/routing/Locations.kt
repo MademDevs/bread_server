@@ -11,7 +11,7 @@ import io.ktor.locations.Location
 @Location("/restaurant") object AllRestaurantsRoute
 @Location("/restaurant/{id}") data class RestaurantByIdRoute(val id : Int)
 //@Location("restaurant/{location}&{radius}") data class RestaurantByLocationAndRadiusRoute(val location: String, val radius: String)
-@Location("/restaurant/find") data class RestaurantByLocationAndRadiusRoute(val location: String, val radius: String)
+@Location("/restaurant/find") data class RestaurantByLocationAndRadiusRoute(val location: String?, val radius: String?)
 
 @Location("dish/all/{restaurant_id}") data class DishByRestaurantRoute(val restaurant_id: Int)
 @Location("dish/{id}") data class DishByIdRoute(val id: Int)
