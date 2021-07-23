@@ -69,6 +69,13 @@ class DbDishRepository(private val database : Database) {
 
     fun updateUserFavourites(userId: Int, dishId: Int) : RepositoryResponse<List<DBDish>, Throwable> {
         val usersFavourites = getDishFavouritesByUserId(userId)
+
+        database
+            .sequenceOf(DBDishTable)
+            .firstOrNull {
+                (it.id eq dishId)
+            } ?: return RepositoryResponse.Error(NotFoundException())
+
         when(usersFavourites){
             is RepositoryResponse.Data -> {
                 if(usersFavourites.value.find{it -> dishId == it.id} == null){
@@ -82,20 +89,24 @@ class DbDishRepository(private val database : Database) {
                         it.dishID eq dishId
                     }
                 }
+                return getDishFavouritesByUserId(userId)
             }
             is RepositoryResponse.Error -> { return usersFavourites }
         }
-
-        return getDishFavouritesByUserId(userId)
     }
 
     fun getDishFavouritesByUserId(userId: Int) : RepositoryResponse<List<DBDish>, Throwable>{
+        database
+            .sequenceOf(DBBreadUserTable)
+            .firstOrNull{
+                (it.id eq userId)
+            } ?: return RepositoryResponse.Error(NotFoundException())
+
         val fetched = database
             .sequenceOf(DBUserLikesDishTable)
             .filter { it.userID eq userId }
             .map { it.dish }
             .toList()
-
         return RepositoryResponse.Data(fetched)
     }
 
@@ -112,11 +123,17 @@ class DbDishRepository(private val database : Database) {
     }
 
     fun getDishesOfRestaurant(restaurantId: Int) : RepositoryResponse<List<DBDish>,Throwable>{
+        database
+            .sequenceOf(DBRestaurantTable)
+            .firstOrNull {
+                (it.id eq restaurantId)
+            } ?: return RepositoryResponse.Error(NotFoundException())
+
         val fetched = database
-            .sequenceOf(DBDishTable)
-            .filter {
-                (it.restaurantID eq restaurantId)
-            }.toList()
+                .sequenceOf(DBDishTable)
+                .filter {
+                    (it.restaurantID eq restaurantId)
+                }.toList()
         return RepositoryResponse.Data(fetched)
     }
 
