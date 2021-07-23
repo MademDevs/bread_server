@@ -78,6 +78,7 @@ class DbDishRepository(private val database : Database) {
 
         when(usersFavourites){
             is RepositoryResponse.Data -> {
+                println("data")
                 if(usersFavourites.value.find{it -> dishId == it.id} == null){
                     database.insert(DBUserLikesDishTable){
                         set(it.userID, userId)
@@ -91,7 +92,10 @@ class DbDishRepository(private val database : Database) {
                 }
                 return getDishFavouritesByUserId(userId)
             }
-            is RepositoryResponse.Error -> { return usersFavourites }
+            is RepositoryResponse.Error -> {
+                println("Error")
+                return RepositoryResponse.Error(NotFoundException())
+            }
         }
     }
 

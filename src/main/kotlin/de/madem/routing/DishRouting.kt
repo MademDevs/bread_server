@@ -58,7 +58,7 @@ fun Routing.configureDishRouting() {
         if(userId != null && dishId != null){
             when(val dbResponse = AppModule.databaseRepository.dishes.updateUserFavourites(userId, dishId)) {
                 is RepositoryResponse.Data -> call.respond(dbResponse.value)
-                is RepositoryResponse.Error -> call.respond(dbResponse.error)
+                is RepositoryResponse.Error -> call.respond(HttpStatusCode.NotFound)
             }
         } else {
             call.respond(HttpStatusCode.BadRequest)
