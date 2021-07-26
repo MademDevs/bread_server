@@ -78,15 +78,17 @@ class DbRestaurantRepository(private val database: Database) {
     }
 
     fun getRestaurantByLocationAndRadius(location: List<Double>, radius: Int): RepositoryResponse<List<DBRestaurant>, Throwable> {
+        println(location)
         val restaurants = database
             .sequenceOf(DBRestaurantTable)
             .toList()
         val addresses = database
             .sequenceOf(DBAddressTable)
             .toList()
-        addresses.map { it.takeIf { abs(it.longitude - location[0]) < radius/111.13 && abs(it.latitude - location[1]) < radius/111.13 }}
-        restaurants.map { it.takeIf { addresses.contains(it.address) }}
-        return RepositoryResponse.Data(restaurants)
+        val filteredAddresses = addresses.filter { abs(it.latitude - location[0]) < radius/111.13 && abs(it.longitude - location[1]) < radius/111.13 }
+        println(filteredAddresses)
+        val filteredRestaurants = restaurants.filter { filteredAddresses.map { it.id }.contains(it.address.id) }
+        return RepositoryResponse.Data(filteredRestaurants)
     }
 
     //#endregion

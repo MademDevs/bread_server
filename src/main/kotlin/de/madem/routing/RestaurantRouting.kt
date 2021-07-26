@@ -65,12 +65,16 @@ fun Routing.configureRestaurantRouting() {
 
     get<RestaurantByLocationAndRadiusRoute>{ route ->
         println("Location is: ${route.location}\nRadius is: ${route.radius}")
-        val location = route.location?.removeSurrounding("[", "]")?.split(",")?.map { it.toDouble()} //call.request.queryParameters["location"]?.removeSurrounding("[", "]")?.split(",")?.map { it.toDouble() }
-        val radius = route.radius?.toInt() //call.request.queryParameters["radius"]?.toInt()
+        val location = route.location?.removeSurrounding("[", "]")?.split(",")?.map { it.toDoubleOrNull()} //call.request.queryParameters["location"]?.removeSurrounding("[", "]")?.split(",")?.map { it.toDouble() }
+        val radius = route.radius?.toIntOrNull() //call.request.queryParameters["radius"]?.toInt()
 
-        if(location != null && radius != null) {
+        if(location != null
+            && location.all { it != null }
+            && location.size == 2
+            && radius != null
+            && radius >= 0) {
             when (val dbResponse =
-                AppModule.databaseRepository.restaurants.getRestaurantByLocationAndRadius(location, radius)) {
+                AppModule.databaseRepository.restaurants.getRestaurantByLocationAndRadius(location.map { it!! }, radius)) {
                 is RepositoryResponse.Data -> {
                     val responseData = dbResponse
                         .value
